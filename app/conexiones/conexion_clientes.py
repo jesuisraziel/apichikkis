@@ -5,13 +5,18 @@ class ConexionCliente(Conexion):
     def listar_clientes(self):
         self.conectar()
         cursor = self.conexion_activa.cursor()
-        cursor.execute("SELECT * FROM Cliente;")
-        self.conexion_activa.commit()
-        usuarios = cursor.fetchall()
-        cursor.close()
-        self.desconectar()
-        return usuarios
-
+        try:
+            cursor.execute("SELECT * FROM Cliente;")
+            self.conexion_activa.commit()
+            usuarios = cursor.fetchall()
+            cursor.close()
+            self.desconectar()
+            return usuarios  
+        except:
+            cursor.close()
+            self.desconectar()
+            raise Exception("Error al acceder a base de datos.")                        
+        
     def obtener_cliente(self,cedula):
         self.conectar()
         cursor = self.conexion_activa.cursor()
