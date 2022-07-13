@@ -26,7 +26,6 @@ def get_clientes():
 def post_cliente():
     dict_cliente = request.get_json()
     if {'cedula','cliente','email','whatsapp'} <= set(dict_cliente):
-<<<<<<< HEAD
         if(not validador_clientes.validar_diccionario_clientes(dict_cliente)):
             print("Datos de JSON no validos.")
             abort(400)
@@ -35,13 +34,6 @@ def post_cliente():
         cc.insertar_cliente(dict_cliente["cedula"],dict_cliente["name"],dict_cliente["email"],whatsapp)
         return dict_cliente,201
     else:
-=======
-        cc = conexion_clientes.ConexionCliente()
-        whatsapp = dict_cliente["whatsapp"][1:]
-        cc.insertar_cliente(dict_cliente["cedula"],dict_cliente["name"],dict_cliente["email"],whatsapp)
-        return '',201
-    else
->>>>>>> f4b95c4e996b2ccf4e6859358efad14ffac2d10f
         print("Error en JSON de entrada")
         abort(400)
 
@@ -53,7 +45,6 @@ def put_cliente(cedula):
     cc.modificar_cliente(cedula,dict_cliente["name"],whatsapp,dict_cliente["email"])
     return '', 200
 
-<<<<<<< HEAD
 @app.route("/orders",methods=["POST"])
 def post_orden():
    dict_no = request.get_json()
@@ -73,8 +64,6 @@ def post_orden():
        print("Error en JSON de entrada")
        abort(400)
 
-=======
->>>>>>> f4b95c4e996b2ccf4e6859358efad14ffac2d10f
 def pagina_no_encontrada(error):
     return "<h1>Error 404<h2><h2>Página no encontrada</h2>"
 
