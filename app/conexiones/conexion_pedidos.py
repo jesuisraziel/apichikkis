@@ -19,3 +19,22 @@ class ConexionPedido(Conexion):
             cursor.close()
             self.desconectar()
             print(f"Estado del pedido {id} se ha cambiado a {estado}")
+            
+        def modificar_screenshot(self, id, bytes_imagen):
+            self.conectar()
+            cursor = self.conexion_activa.cursor()
+            cursor.execute("UPDATE Pedido SET screenshot = %s WHERE id = %s",(bytes_imagen, id))
+            self.conexion_activa.commit()
+            cursor.close()
+            self.desconectar()
+            print(f"Se ha subido una screenshot de pago para el pedido {id}")
+            
+        def listar_pedidos(self):
+           self.conectar()
+           cursor = self.conexion_activa.cursor()
+           cursor.execute("SELECT * FROM Pedido")
+           self.conexion_activa.commit()
+           retornable = cursor.fetchall()
+           cursor.close()
+           self.desconectar()
+           return retornable

@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def route():
-    return "<h1>Hello, y'all!<h1>"
+    return "Hey y'all, Scott here."
 
 @app.route("/customers")
 def get_clientes():
@@ -46,7 +46,7 @@ def put_cliente(cedula):
     return '', 200
 
 @app.route("/orders",methods=["POST"])
-def post_orden():
+def post_pedido():
    dict_no = request.get_json()
    if {'quantity','payment_method','remarks','city','municipality','cedula'} <= set(dict_no):
        if dict_no['municipality'].lower() != 'maneiro':
@@ -63,6 +63,34 @@ def post_orden():
    else:
        print("Error en JSON de entrada")
        abort(400)
+
+@app.route("/orders/<id>/status", methods = ["PATCH"])
+def patch_estado_pedido(id):
+    dict_estado = request.get_json()
+    conexion = conexion_pedidos.ConexionPedido()
+    conexion.modificar_estado(id,dict_estado['status'])
+    return '', 200
+
+@app.route("/orders/<id>/payment-screenshot", methods = ["POST"])
+def post_screenshot_pedido(id):
+    archivo = request.files['screenshot']
+    bytes_imagen = archivo.read()
+    conexion = conexion_pedidos.ConexionPedido()
+    conexion.modificar_screenshot(id,bytes_imagen)
+    return '',201
+    
+@app.route("/orders")
+def get_pedidos():
+    conexion = conexion_pedidos.ConexionPedido()
+    if (request.args.to_dict == {}):
+        lista_tuplas = conexion.listar_pedidos()
+    else:
+        lista_tuplas = [] #Aquí la logica de filtrado, se hace con la clase psycopg2.sql
+    #Aqui utilizar un proceso similar al get de clientes para convertir la lista de tuplas
+    #en una lista de diccionarios. Se guardará en retornable.
+    retornable = []
+    return jsonify(retornable), 200
+    
 
 def pagina_no_encontrada(error):
     return "<h1>Error 404<h2><h2>Página no encontrada</h2>"
