@@ -6,9 +6,9 @@ import datetime
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/home")
 def route():
-    return "Hey y'all, Scott here."
+    return "<h1>Ayo</h1>"
 
 @app.route("/customers")
 def get_clientes():
@@ -82,13 +82,37 @@ def post_screenshot_pedido(id):
 @app.route("/orders")
 def get_pedidos():
     conexion = conexion_pedidos.ConexionPedido()
-    if (request.args.to_dict == {}):
+    retornable = []
+    if (request.args.to_dict() == {}):
         lista_tuplas = conexion.listar_pedidos()
     else:
-        lista_tuplas = [] #Aquí la logica de filtrado, se hace con la clase psycopg2.sql
-    #Aqui utilizar un proceso similar al get de clientes para convertir la lista de tuplas
-    #en una lista de diccionarios. Se guardará en retornable.
-    retornable = []
+        dict_args = request.args.to_dict()
+        #identificadores = []
+        segmento_where = ""
+        if 'cedula' in dict_args:
+            #identificador = psycopg2.sql.Identifier('cedula')
+            #identificadores.append(identificador)
+            #identificadores.append('cedula')
+            discriminante = dict_args['cedula']
+            segmento_where = segmento_where + "cedula = '" + discriminante + "' AND "
+        if 'status' in dict_args:
+            #identificador = psycopg2.sql.Identifier('estado_delivery')
+            #identificadores.append(identificador)
+            #identificadores.append('estado_delivery')
+            discriminante = dict_args['status']
+            segmento_where = segmento_where + "estado_delivery = '" + discriminante + "' AND "
+        if 'date' in dict_args:
+            #identificador = psycopg2.sql.Identifier('fecha')
+            #identificadores.append(identificador)
+            #identificadores.append('fecha')
+            discriminante = dict_args['fecha']
+            segmento_where = segmento_where + "CAST(fecha AS date) = '" + discriminante + "' AND "
+        segmento_where = segmento_where[:-5] + ";"
+        query = f"SELECT * FROM Pedido WHERE {segmento_where}"
+        lista_tuplas = conexion.realizar_query_preconstruida(query)
+    if lista_tuplas != []:
+        for tup in lista_tuplas:
+            #TODO Parsing
     return jsonify(retornable), 200
     
 

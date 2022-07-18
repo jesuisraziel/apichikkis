@@ -38,3 +38,13 @@ class ConexionPedido(Conexion):
            cursor.close()
            self.desconectar()
            return retornable
+       
+        def realizar_query_preconstruida(self, query_sql):
+            self.conectar()
+            cursor = self.conexion_activa.cursor()
+            cursor.execute(query_sql)
+            self.conexion_activa.commit()
+            retornable = cursor.fetchall()
+            cursor.close()
+            self.desconectar()
+            return retornable
