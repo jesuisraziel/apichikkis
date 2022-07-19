@@ -103,25 +103,10 @@ ALTER TABLE ONLY public.pedido ALTER COLUMN id SET DEFAULT nextval('public.pedid
 -- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.cliente (cedula, nombre_completo, email, whatsapp) FROM stdin;
-28074361	Jes£s Raziel Gonz lez Sosa	chokokokyunokibou@gmail.com	584167995554
-010206	Enyerck Gomez	elquelolea.com	6969129
-12225886	Jesús González Hernández	capatarida@gmail.com	587129904
-29668074	Maria Celeste	anika@gmail.com	584162410092
-4219872212	Kevin Trevor	kaladan@gmail.com	5941619293
-\.
-
 
 --
 -- Data for Name: pedido; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-
-COPY public.pedido (id, municipio, ciudad, n_hamburguesas, monto_delivery, monto_total, metodo_pago, estado_delivery, screenshot, fecha, cedula, remark) FROM stdin;
-5	Arismendi	Atamo Sur	2	2.0000	12.0000	pago_movil	pending	\N	2022-07-13 18:26:46.635135	4219872212	Una sin queso fundido
-2	Mariño	Porlamar	3	2.0000	17.0000	pago_movil	pending	\N	2022-07-13 16:51:08.398508	28074361	\N
-3	Arismendi	Atamo Sur	1	2.0000	7.0000	efectivo	pending	\N	2022-07-13 17:05:07.028014	28074361	\N
-1	Maneiro	Pampatar	2	0.0000	10.0000	pago_movil	completed	\N	2022-07-13 16:48:38.594523	28074361	\N
-\.
 
 
 --
