@@ -87,12 +87,8 @@ def get_pedidos():
         lista_tuplas = conexion.listar_pedidos()
     else:
         dict_args = request.args.to_dict()
-        #identificadores = []
         segmento_where = ""
         if 'cedula' in dict_args:
-            #identificador = psycopg2.sql.Identifier('cedula')
-            #identificadores.append(identificador)
-            #identificadores.append('cedula')
             discriminante = dict_args['cedula']
             segmento_where = segmento_where + "cedula = '" + discriminante + "' AND "
         if 'status' in dict_args:
@@ -105,16 +101,59 @@ def get_pedidos():
             #identificador = psycopg2.sql.Identifier('fecha')
             #identificadores.append(identificador)
             #identificadores.append('fecha')
-            discriminante = dict_args['fecha']
+            discriminante = dict_args['date']
             segmento_where = segmento_where + "CAST(fecha AS date) = '" + discriminante + "' AND "
         segmento_where = segmento_where[:-5] + ";"
         query = f"SELECT * FROM Pedido WHERE {segmento_where}"
         lista_tuplas = conexion.realizar_query_preconstruida(query)
     if lista_tuplas != []:
         for tup in lista_tuplas:
-            #TODO Parsing
+            dict_ped = {}
+            dict_ped['id'] = tup[0]
+            dict_ped['municipality'] = tup[1]
+            dict_ped['city'] = tup[2]
+            dict_ped['quantity'] = tup[3]
+            dict_ped['delivery_amount'] = tup[4]
+            dict_ped['total'] = tup[5]
+            dict_ped['payment_method'] = tup[6]
+            dict_ped['status'] = tup[7]
+            screen = tup[8]
+            if screen is not None:
+                dict_ped['screenshot'] = screen.hex()
+            else:
+                dict_ped['screenshot'] = screen
+            fecha = tup[9]
+            dict_ped['datetime'] = parsear_fecha(fecha)
+            dict_ped['cedula'] = tup[10]
+            dict_ped['remark'] = tup[11]
+            retornable.append(dict_ped)
     return jsonify(retornable), 200
     
+
+def parsear_fecha(fecha):
+    string_fecha = ""
+    string_fecha = string_fecha + str(fecha.year) + "-"
+    if (fecha.month < 10):
+        string_fecha = string_fecha + "0" + str(fecha.month) + "-"
+    else:
+        string_fecha = string_fecha + str(fecha.month) + "-"
+    if (fecha.day < 10):
+        string_fecha = string_fecha + "0" + str(fecha.day) + " "
+    else:
+        string_fecha = string_fecha + str(fecha.day) + " "
+    if (fecha.hour < 10):
+        string_fecha = string_fecha + "0" + str(fecha.hour) + ":"
+    else:
+        string_fecha = string_fecha + str(fecha.hour) + ":"
+    if (fecha.minute < 10):
+        string_fecha = string_fecha + "0" + str(fecha.minute) + ":"
+    else:
+        string_fecha = string_fecha + str(fecha.minute) + ":"
+    if (fecha.second < 10):
+        string_fecha = string_fecha + "0" + str(fecha.second)
+    else:
+        string_fecha = string_fecha + str(fecha.second)    
+    return string_fecha
 
 def pagina_no_encontrada(error):
     return "<h1>Error 404<h2><h2>Página no encontrada</h2>"
